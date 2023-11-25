@@ -5,8 +5,6 @@
 using namespace std;
 #define A 10
 
-
-
 //Vector STL implementation
 template <typename T>
 class EVector {
@@ -83,32 +81,25 @@ public:
 
 //Map STL implementation
 
+bool is_key_equal(const auto& pair, const auto& key) {
+        return pair.first == key;
+}   
+
 template <typename K, typename V>
 class EMap {
 private:
-    EVector<std::pair<K, V>> data;
+    EVector<pair<K, V>> data;
 
 public:
+
+    
  
     void insert(const K& key, const V& value) {
-        auto it =custom_find_if(data.begin(), data.end(),
-            [&](const auto& pair) { return pair.first == key; });
+        auto it = custom_find_if(data.begin(), data.end(), is_key_equal);
         if (it != data.end()) {
-            it->second = value;
+            it->second = value; //value update
         } else {
-            data.push_back(std::make_pair(key, value));
-        }
-    }
-
-
-    bool get(const K& key, V& value) const {
-        auto it =custom_find_if(data.begin(), data.end(),
-            [&](const auto& pair) { return pair.first == key; });
-        if (it != data.end()) {
-            value = it->second;
-            return true;
-        } else {
-            return false;
+            data.push_back(make_pair(key, value));
         }
     }
 
@@ -117,7 +108,7 @@ public:
     }
 
     
-    size_t size() const {
+    int size() const {
         return data.getSize();
     }
 
@@ -131,18 +122,11 @@ public:
     }
 
     V& operator[](const K& key) {
-    // Check if the key already exists
-        auto it = custom_find_if(data.begin(), data.end(),
-            [&](const auto& pair) { return pair.first == key; });
-
+        auto it = custom_find_if(data.begin(), data.end(), is_key_equal);
         if (it != data.end()) {
-            // Key already exists, return its associated value
             return it->second;
         } else {
-            // Key not found, insert a new pair with an empty value
-            data.push_back(std::make_pair(key, V{}));
-
-            // Return the reference to the newly inserted value
+            data.push_back(make_pair(key, V{}));
             return data[data.getSize() - 1].second;
         }
     }
@@ -322,8 +306,12 @@ class graph{
         cout<<"\n Required path :" << path.getSize() <<endl; ;
 
         for(int i= 0 ;i < path.getSize() ;i++){
-                if(i == (path.getSize() - 1 ))cout<<path[i];
-                else cout<<path[i]<<" -> ";
+                if(i == (path.getSize() - 1 )){
+                 cout<<path[i];   
+                }
+                else {
+                    cout<<path[i]<<" -> ";
+                }
         }
         cout<<endl;
     }
@@ -344,7 +332,6 @@ class graph{
     bool bfs(int rGraph[A][A], int s, int t, int parent[])
     {
         bool visited[A]={0};
-        // memset(visited, 0, sizeof(visited));
 
         Queue q;
         q.enqueue(s);
